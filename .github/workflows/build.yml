@@ -35,45 +35,35 @@ jobs:
     - name: Checkout Repo 
       uses: actions/checkout@v2
 
-    - name: Install Node 16
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Npm Install
-      run: |
-        npm install
-        npm -g install pkg
-
-    - name: Package application
-      run: make package
-
     - name: Upload Release Asset Linux
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ github.event.release.tag_name }}
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
-        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-linux-x64.tar.gz
-        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-linux-x64.tar.gz
+        asset_path: ./dogecoin-spv-${VERSION/v}-linux-x64.tar.gz
+        asset_name: dogecoin-spv-${VERSION/v}-linux-x64.tar.gz
         asset_content_type: application/gzip
 
     - name: Upload Release Asset macOS
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ github.event.release.tag_name }}
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
-        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-darwin-x64.zip
-        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-darwin-x64.zip
+        asset_path: ./dogecoin-spv-${VERSION/v}-darwin-x64.zip
+        asset_name: dogecoin-spv-${VERSION/v}-darwin-x64.zip
         asset_content_type: application/gzip
 
     - name: Upload Release Asset Windows
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ github.event.release.tag_name }}
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
-        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-win-x64.zip
-        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-win-x64.zip
+        asset_path: ./dogecoin-spv-${VERSION/v}-win-x64.zip
+        asset_name: dogecoin-spv-${VERSION/v}-win-x64.zip
         asset_content_type: application/gzip
