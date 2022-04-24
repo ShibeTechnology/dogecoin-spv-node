@@ -35,6 +35,19 @@ jobs:
     - name: Checkout Repo 
       uses: actions/checkout@v2
 
+    - name: Install Node 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Npm Install
+      run: |
+        npm install
+        npm -g install pkg
+
+    - name: Package application
+      run: make package
+
     - name: Upload Release Asset Linux
       uses: actions/upload-release-asset@v1
       env:

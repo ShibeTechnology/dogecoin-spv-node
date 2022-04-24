@@ -9,10 +9,10 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     steps:
-    - name: Build Dogecoin regtest container
-      run: docker build -t dogecoind provision/dogecoind/
     - name: Checkout Repo 
       uses: actions/checkout@v2
+    - name: Build Dogecoin regtest container
+      run: docker build -t dogecoind provision/dogecoind/
     - name: Install Node 16
       uses: actions/setup-node@v2
       with:
