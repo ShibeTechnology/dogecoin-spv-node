@@ -1,0 +1,66 @@
+name: Build and create release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Create Release
+    
+    steps:
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+  build:
+    name: Build Artefacts
+    needs: release
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo 
+      uses: actions/checkout@v2
+
+    - name: Upload Release Asset Linux
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-linux-x64.tar.gz
+        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-linux-x64.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload Release Asset macOS
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-darwin-x64.zip
+        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-darwin-x64.zip
+        asset_content_type: application/gzip
+
+    - name: Upload Release Asset Windows
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: ./dogecoin-spv-${{github.event.release.tag_name/v}}-win-x64.zip
+        asset_name: dogecoin-spv-${{github.event.release.tag_name/v}}-win-x64.zip
+        asset_content_type: application/gzip
