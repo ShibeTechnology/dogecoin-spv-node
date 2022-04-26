@@ -45,7 +45,9 @@ jobs:
         npm install
         npm -g install pkg
     - name: Package application
-      run: make package
+      run: |
+        make package
+        ls
 
     - name: Upload Release Asset Linux
       uses: actions/upload-release-asset@v1
