@@ -53,7 +53,7 @@ jobs:
       id: version
       run: |
         echo $GITHUB_REF
-        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//:1}
 
 
     - name: Upload Release Asset Linux
