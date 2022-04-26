@@ -51,11 +51,9 @@ jobs:
 
     - name: Set environment paths
       id: version
-      env:
-        VERSION: ${{ github.event.release.tag_name }}
       run: |
-        echo $VERSION
-        echo '::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}'
+        echo $GITHUB_REF
+        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
 
     - name: Upload Release Asset Linux
