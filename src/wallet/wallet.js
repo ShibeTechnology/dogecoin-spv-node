@@ -332,6 +332,8 @@ class Wallet extends EventEmitter {
       }
 
       const pubkeyHash = scriptElement.hash || pubkeyToPubkeyHash(Buffer.from(scriptElement.pubkey, 'hex'))
+
+      // FIXME: will throw an error if key not saved
       this.db.markPubkeyAsUsed(pubkeyHash.toString('hex'))
 
       // Standard transaction
