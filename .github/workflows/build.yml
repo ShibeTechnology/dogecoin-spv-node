@@ -39,6 +39,7 @@ jobs:
     - name: Set environment paths
       id: version
       run: |
+        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
         npm version --no-git-tag-version ${{github.ref_name}}
 
     - name: Npm Install
