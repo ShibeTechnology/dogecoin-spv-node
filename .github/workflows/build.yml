@@ -8,7 +8,9 @@ on:
 jobs:
   release:
     name: Create Release
-    
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
     - name: Create Release
       id: create_release
@@ -20,15 +22,9 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: true
 
-    runs-on: ubuntu-latest
-
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-
   build:
     name: Build Artefacts
     needs: release
-
     runs-on: ubuntu-latest
 
     steps:
@@ -43,8 +39,7 @@ jobs:
     - name: Set environment paths
       id: version
       run: |
-        echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-        npm version --no-git-tag-version ${{steps.version.outputs.VERSION}}
+        npm version --no-git-tag-version ${{github.ref_name}}
 
     - name: Npm Install
       run: |
