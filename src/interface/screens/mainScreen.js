@@ -34,7 +34,6 @@ class MainScreen extends Screen {
   }
 
   _handleChangedEvent () {
-    debug('Changed!')
     this.update()
   }
 
@@ -73,8 +72,6 @@ class MainScreen extends Screen {
 
   format (height = 0, bestHeight = 0, hash = null, numberOfPeers = 0, tips = new Map(), merkleHeight = 0, balance = 0n, paymentChannels = []) {
     // TODO: seperate in sublayout
-
-    debug(paymentChannels.length)
 
     let paymentChannelsSection = '    NONE               '
     if (paymentChannels.length > 0) {
