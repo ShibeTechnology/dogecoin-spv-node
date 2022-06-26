@@ -534,7 +534,6 @@ class Wallet extends EventEmitter {
     let transaction = this._newTx()
 
     const { txIns, total } = await this._collectInputsForAmount(amount)
-
     transaction.txIns = txIns
 
     const unusedPubkey = await this.getUnusedPubkey()

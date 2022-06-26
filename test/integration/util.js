@@ -5,23 +5,35 @@ const fs = require('fs')
 const SPVNode = require('../../src/spvnode')
 const networks = require('../../src/network')
 const { getSettings } = require('../../src/settings')
+const Wallet = require('../../src/wallet')
 
 const TEST_VECTORS_DIR = path.join('.', 'test', 'test_vectors')
 
-async function setup (t) {
-    let data = fs.readFileSync(path.join(TEST_VECTORS_DIR, 'pubkeyshash.json'), { encoding: 'utf-8' })
-    let pubkeyshash =  JSON.parse(data)
-  
+async function setup (t) {  
     // setup files
     let settings = getSettings(networks.REGTEST)
+
+    const mnemonic = 'neutral acoustic balance describe access pitch tourist skull recycle nation silent crawl'
   
     // Test data folder
     settings.DATA_FOLDER = path.join(__dirname, `data${Date.now()}`)
-  
+    const SEED_FILE = path.join(settings.DATA_FOLDER, 'seed.json')
+
     if (!fs.existsSync(settings.DATA_FOLDER)) {
       fs.mkdirSync(settings.DATA_FOLDER, {recursive: true})
       fs.mkdirSync(path.join(settings.DATA_FOLDER, 'spvnode'))
+      fs.mkdirSync(path.join(settings.DATA_FOLDER, 'wallet'))
+      // Create redemscript file
+      fs.writeFileSync(path.join(settings.DATA_FOLDER, 'redeemscripts.json'), JSON.stringify([]))
     }
+
+    if (!fs.existsSync(SEED_FILE)) {
+      Wallet.createSeedFile(mnemonic, SEED_FILE)
+    }  
+    
+    let wallet = new Wallet(settings)
+    await wallet.init()
+    let pubkeyshash =  await wallet.getAllpubkeyHashes()
   
     var spvnode = new SPVNode(pubkeyshash, settings)
   
@@ -43,8 +55,6 @@ async function setup (t) {
         },*/
       }
     })
-
-    settings.DEFAULT_PORT = 11022
   
     t.log('container created')
   
@@ -58,7 +68,7 @@ async function setup (t) {
     // Needed otherwise we try to connect when node is not ready
     await new Promise(resolve => setTimeout(resolve, 5000));
 
-    t.context = { spvnode, settings, container }
+    t.context = { spvnode, settings, container, wallet }
 }
 
 async function close (t) {
