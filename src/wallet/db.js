@@ -137,6 +137,22 @@ class WalletDB {
     }
     return this.commitments.put(hash, tx)
   }
+
+  async closeAll () {
+    await this.unspentOutputs.close()
+    await this.txs.close()
+    await this.pubkeys.close()
+    await this.redeemScripts.close()
+    await this.commitments.close()
+  }
+
+  async openAll () {
+    await this.unspentOutputs.open()
+    await this.txs.open()
+    await this.pubkeys.open()
+    await this.redeemScripts.open()
+    await this.commitments.open()
+  }
 }
 
 module.exports = WalletDB
