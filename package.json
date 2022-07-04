@@ -13,7 +13,7 @@
     "start": "DEBUG=*,-follow-redirects node src/main.js",
     "dev": "DEBUG=*,-nodemon:*,-nodemon nodemon src/main.js",
     "clean": "rm -rf data",
-    "test": "NETWORK=testnet nyc ava test/integration/issue4.test.js --timeout=2m",
+    "test": "NETWORK=testnet nyc ava --timeout=2m",
     "generate": "node test/tools/generate.js",
     "lint": "standard",
     "docs:dev": "vuepress dev documentation",

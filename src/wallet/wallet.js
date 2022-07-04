@@ -331,8 +331,6 @@ class Wallet extends EventEmitter {
         continue
       }
 
-      console.log(scriptElement)
-
       const pubkeyHash = scriptElement.hash || pubkeyToPubkeyHash(Buffer.from(scriptElement.pubkey, 'hex'))
 
       try {
@@ -342,6 +340,10 @@ class Wallet extends EventEmitter {
         console.log(err)
         // FIXME: Find a way to find index of pubkey
         await this.db.putPubkey({ hash: pubkeyHash.toString('hex'), publicKey: scriptElement.publicKey || scriptElement.pubkey, isChangeAddress: 0, index: undefined, used: true })
+      }
+
+      if (scriptElement.index > this._nextAddressIndex) {
+        this._nextAddressIndex = scriptElement.index
       }
 
       // Standard transaction
