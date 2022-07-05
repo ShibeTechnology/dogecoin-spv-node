@@ -13,5 +13,3 @@ test.serial('should connect to regtest node', async t => {
 
   t.pass()
 })
-
-test.todo('should send version message to regtest node')
