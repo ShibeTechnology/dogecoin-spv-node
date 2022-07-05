@@ -333,8 +333,18 @@ class Wallet extends EventEmitter {
 
       const pubkeyHash = scriptElement.hash || pubkeyToPubkeyHash(Buffer.from(scriptElement.pubkey, 'hex'))
 
-      // FIXME: will throw an error if key not saved
-      this.db.markPubkeyAsUsed(pubkeyHash.toString('hex'))
+      try {
+        // will throw an error if key not saved
+        await this.db.markPubkeyAsUsed(pubkeyHash.toString('hex'))
+      } catch (err) {
+        console.log(err)
+        // FIXME: Find a way to find index of pubkey
+        await this.db.putPubkey({ hash: pubkeyHash.toString('hex'), publicKey: scriptElement.publicKey || scriptElement.pubkey, isChangeAddress: 0, index: undefined, used: true })
+      }
+
+      if (scriptElement.index > this._nextAddressIndex) {
+        this._nextAddressIndex = scriptElement.index
+      }
 
       // Standard transaction
       const indexBuffer = indexToBufferInt32LE(index)
@@ -378,6 +388,7 @@ class Wallet extends EventEmitter {
   async _handleP2SH (script) {
     debug('Handle P2SH tx')
     let hashScript = extractScriptHashFromP2SH(script)
+    debug(`HashScript ${hashScript.toString('hex')}`)
     hashScript = await this.db.getRedeemScript(hashScript.toString('hex'))
 
     return hashScript

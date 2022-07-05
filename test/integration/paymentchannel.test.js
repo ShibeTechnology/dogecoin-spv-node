@@ -3,24 +3,12 @@ const fs = require('fs')
 const path = require('path')
 const { ECPair } = require('bitcoinjs-lib')
 const { serializePayToMultisigScript } = require('../../src/wallet/utils.js')
-const { setup, close } = require('./util.js')
+const { setup, close, regtest } = require('./util.js')
 const { execSync } = require('child_process')
 const { decodeTxMessage } = require('../../src/commands/tx')
 
 test.before(setup)
 test.after.always(close)
-
-const regtest = {
-  messagePrefix: '\x18Dogecoin Signed Message:\n',
-  bech32: 'tdge',
-  bip32: {
-    public: 0x0432a9a8,
-    private: 0x0432a243
-  },
-  pubKeyHash: 0x6f,
-  scriptHash: 0xc4,
-  wif: 0xef
-}
 
 var pctx
 
@@ -50,8 +38,6 @@ test.serial('should create and send a p2sh transaction', async t => {
 
   const pctxid = execSync(`docker exec ${containerName} dogecoin-cli sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
   execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
-
-  t.context.pctx = pctx
 
   t.pass()
 })
