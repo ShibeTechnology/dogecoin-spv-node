@@ -5,7 +5,6 @@ const path = require('path')
 const { decodeTxMessage } = require('../../src/commands/tx')
 const { setup, close, regtest } = require('./util.js')
 const { ECPair } = require('bitcoinjs-lib')
-const Wallet = require('../../src/wallet')
 
 
 test.before(setup)
@@ -79,4 +78,4 @@ test.serial('should register paymentchannel tx after deleting database', async t
     await new Promise(resolve => setTimeout(resolve, 1000))
   
     t.pass()
-  })
+})
