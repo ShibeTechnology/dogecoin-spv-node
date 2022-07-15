@@ -335,7 +335,10 @@ class Wallet extends EventEmitter {
 
       try {
         // will throw an error if key not saved
-        await this.db.markPubkeyAsUsed(pubkeyHash.toString('hex'))
+        await this.markPubkeyAsUsed(pubkeyHash)
+        // once we register a new tx we need to register a new address and update bloom filter
+        // like this we keep a 20 not use address set
+        await this.generateAddress()
       } catch (err) {
         console.log(err)
         // FIXME: Find a way to find index of pubkey
@@ -370,6 +373,10 @@ class Wallet extends EventEmitter {
     }
   }
 
+  async markPubkeyAsUsed (pubkeyHash) {
+    await this.db.markPubkeyAsUsed(pubkeyHash.toString('hex'))
+  }
+
   async _handleP2PK (script) {
     const pubkeyHash = extractPubkeyHashFromP2PK(script)
     const pubkey = await this.db.getPubkey(pubkeyHash.toString('hex'))
@@ -400,6 +407,8 @@ class Wallet extends EventEmitter {
     const root = bip32.fromSeed(this._seed, this.settings.WALLET)
     const child = root.derivePath(path)
     await this._updatePubkeysState(index, child.publicKey, isChangeAddress ? 1 : 0)
+
+    this.emit('updateFilter', pubkeyToPubkeyHash(child.publicKey))
 
     return child.publicKey
   }

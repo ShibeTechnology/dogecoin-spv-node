@@ -6,6 +6,7 @@ const SPVNode = require('../../src/spvnode')
 const networks = require('../../src/network')
 const { getSettings } = require('../../src/settings')
 const Wallet = require('../../src/wallet')
+const { pubkeyToAddress } = require('../../src/wallet/utils')
 
 const TEST_VECTORS_DIR = path.join('.', 'test', 'test_vectors')
 
@@ -47,6 +48,10 @@ async function setup (t) {
     await wallet.init()
     let pubkeyshash =  await wallet.getAllpubkeyHashes()
   
+    for (let pubkeyhash of pubkeyshash) {
+      t.log(`Address : ${pubkeyToAddress(Buffer.from(pubkeyhash, 'hex'), settings.NETWORK_BYTE, true)}`)
+    }
+
     var spvnode = new SPVNode(pubkeyshash, settings)
   
     // Start Dogecoin docker node

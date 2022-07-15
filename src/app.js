@@ -195,6 +195,12 @@ async function app (args) {
       })
   })
 
+  // always have this after calling wallet.init()
+  wallet.on('updateFilter', async function (element) {
+    debug(`New element to add to filter : ${element}`)
+    await spvnode.updateFilter(element.toString('hex'))
+  })
+
   const pubkeyHashes = await wallet.getAllpubkeyHashes()
 
   // Create SPV node
