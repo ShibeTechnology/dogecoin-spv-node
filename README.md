@@ -5,7 +5,7 @@
 A simple spv node for Dogecoin.
 
 
-See [Documentation](https://bitcoinamiens.github.io/dogecoin-spv-node/)
+See [Documentation](https://shibetechnology.github.io/dogecoin-spv-node/)
 
 ## Development (regtest)
 
