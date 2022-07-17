@@ -1,25 +1,22 @@
 /*
   Generate test_vectors files
 */
-const fs = require('fs')
-const Peer = require('../../src/peer')
+// const fs = require('fs')
+// const path = require('path')
+
 const { getVersion, encodeVersionMessage } = require('../../src/commands/version')
 const { encodePingMessage } = require('../../src/commands/ping')
 const { encodeFilterLoad } = require('../../src/commands/filterload')
 const { preparePacket } = require('../../src/commands/packet')
-const path = require('path')
 const BloomFilter = require('bloom-filter')
 
-const PATH_TEST_VECTORS_DIR = path.join('test', 'test_vectors')
-
-const peer = new Peer('127.0.0.1', 18444)
-var data
+// const PATH_TEST_VECTORS_DIR = path.join('test', 'test_vectors')
 
 {
   console.log('\n#### Generate version.json ####')
-  let version = getVersion('127.0.0.1', 18444)
-  let payload = encodeVersionMessage(version)
-  
+  const version = getVersion('127.0.0.1', 18444)
+  const payload = encodeVersionMessage(version)
+
   // Convert to string for stringify
   version.services = version.services.toString()
   version.time = version.time.toString()
@@ -27,29 +24,31 @@ var data
   version.local.services = version.local.services.toString()
   version.nonce = version.nonce.toString()
 
-  data = {
+  const data = {
     hex: payload.toString('hex'),
     value: version
   }
-  //fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'version.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  // fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'version.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  console.log(data)
   console.log('Done !\n')
 }
 
 {
   console.log('\n#### Generate ping.json ####')
-  let nonce = 1n
-  let payload = encodePingMessage(nonce)
-  data = {
+  const nonce = 1n
+  const payload = encodePingMessage(nonce)
+  const data = {
     hex: payload.toString('hex'),
     value: nonce.toString()
   }
-  //fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'ping.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  // fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'ping.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  console.log(data)
   console.log('Done !\n')
 }
 
 {
   console.log('\n#### Generate filteradd.json ####')
-  let addresses = ['f209dd7f1451468a67dc4f98d945d83be056a80d',
+  const addresses = ['f209dd7f1451468a67dc4f98d945d83be056a80d',
     '0c55e056b5602ffdb7ec0025f7f627b8aa438937',
     'f157f9fb0c247cd4fc6987e0d2562031ed1b6151',
     'dd7243e07933b7b0b09cae646ea3c44321f7c0e5',
@@ -90,31 +89,32 @@ var data
     '0dba50b39444e2780b326bbe9a8696500f7ab0fe',
     'f781e5e5d531c990ab8f5964141ed32bc391bb94'
   ]
-  let filter = BloomFilter.create(addresses.length, 0.001)
-  for (var address of addresses) {
-    let bufferAddress = Buffer.from(address, 'hex')
+  const filter = BloomFilter.create(addresses.length, 0.001)
+  for (const address of addresses) {
+    const bufferAddress = Buffer.from(address, 'hex')
     filter.insert(bufferAddress)
   }
 
   filter.nFlags = 1
-  
+
   const filterElement = filter.toObject()
-  
-  let payload = encodeFilterLoad(filterElement)
-  data = {
+
+  const payload = encodeFilterLoad(filterElement)
+  const data = {
     hex: payload.toString('hex'),
     value: filterElement
   }
-  //fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'filterload.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  // fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'filterload.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  console.log(data)
   console.log('Done !\n')
 }
 
 {
   console.log('\n#### Generate packet.json ####')
-  let nonce = 1n
-  let payload = encodePingMessage(nonce)
-  let packet = preparePacket('ping', payload, 0xdcb7c1fc)
-  data = {
+  const nonce = 1n
+  const payload = encodePingMessage(nonce)
+  const packet = preparePacket('ping', payload, 0xdcb7c1fc)
+  const data = {
     hex: packet.toString('hex'),
     value: {
       cmd: 'ping',
@@ -122,6 +122,7 @@ var data
       length: payload.length
     }
   }
-  //fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'packet.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  // fs.writeFileSync(path.join(PATH_TEST_VECTORS_DIR, 'packet.json'), JSON.stringify(data), { encoding: 'utf-8'})
+  console.log(data)
   console.log('Done !\n')
 }
