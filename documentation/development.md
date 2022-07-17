@@ -4,7 +4,6 @@
 
 The project structure is the following:
 * `/bin/**` files for the CLI
-* `/docs/**` compiled 
 * `/documentation/**` the documentation files
 * `/provision/**` dogecoind dockerfile for quick dev setup
 * `/src/**` all the sources files for the core logic of the application
