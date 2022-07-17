@@ -2,7 +2,6 @@ const test = require('ava')
 const fs = require('fs')
 const path = require('path')
 const { ECPair } = require('bitcoinjs-lib')
-const { serializePayToMultisigScript } = require('../../src/wallet/utils.js')
 const { setup, close, regtest } = require('./util.js')
 const { execSync } = require('child_process')
 const { decodeTxMessage } = require('../../src/commands/tx')
@@ -10,7 +9,7 @@ const { decodeTxMessage } = require('../../src/commands/tx')
 test.before(setup)
 test.after.always(close)
 
-var pctx
+let pctx
 
 test.serial('should create and send a p2sh transaction', async t => {
   const { wallet, container } = t.context
@@ -36,7 +35,7 @@ test.serial('should create and send a p2sh transaction', async t => {
   t.log('Initiate payment channel')
   pctx = await wallet.initiatePaymentChannel(100n, bobKey.publicKey.toString('hex'), 1n, 200)
 
-  const pctxid = execSync(`docker exec ${containerName} dogecoin-cli sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
+  execSync(`docker exec ${containerName} dogecoin-cli sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
   execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
 
   t.pass()
@@ -68,8 +67,8 @@ test.serial('should register paymentchannel tx after deleting database', async t
   })
 
   t.log('Delete database folders')
-  fs.rmSync(path.join(settings.DATA_FOLDER, 'spvnode'), {recursive: true})
-  fs.rmSync(path.join(settings.DATA_FOLDER, 'wallet'), {recursive: true})
+  fs.rmSync(path.join(settings.DATA_FOLDER, 'spvnode'), { recursive: true })
+  fs.rmSync(path.join(settings.DATA_FOLDER, 'wallet'), { recursive: true })
   fs.rmSync(path.join(settings.DATA_FOLDER, 'redeemscripts.json'))
 
   t.log('Connect spv node to regtest node and synchronize')

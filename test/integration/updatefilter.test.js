@@ -16,7 +16,7 @@ test.after.always(close)
 */
 
 // new element to add to filter
-var newHash
+let newHash
 
 test.serial('should generate 20 transactions', async t => {
   const { wallet, container } = t.context
@@ -31,7 +31,7 @@ test.serial('should generate 20 transactions', async t => {
 
     t.log(`Sending to address : ${address}`)
 
-    const txid = execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
+    execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
     execSync(`docker exec ${containerName} dogecoin-cli generate 50`)
 
     const pubkeyHash = bs58check.decode(address).slice(1)
@@ -40,7 +40,6 @@ test.serial('should generate 20 transactions', async t => {
 
   t.pass()
 })
-
 
 test.serial('should sync the 20 transcations', async t => {
   const { settings, spvnode, wallet } = t.context
@@ -117,7 +116,7 @@ test.serial('should sync the 21st transaction', async t => {
 
   t.log('Connect spv node to regtest node and synchronize')
   await spvnode.addPeer(settings.NODE_IP, settings.DEFAULT_PORT)
-  
+
   // add new key to filter to all nodes
   t.log(`new Hash : ${newHash}`)
   await spvnode.updateFilter(newHash)

@@ -25,7 +25,7 @@ test.serial('should generate 40 transactions', async t => {
 
     t.log(`Sending to address : ${address}`)
 
-    const txid = execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
+    execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
     execSync(`docker exec ${containerName} dogecoin-cli generate 50`)
 
     const pubkeyHash = bs58check.decode(address).slice(1)
