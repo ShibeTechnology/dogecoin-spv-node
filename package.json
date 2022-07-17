@@ -19,6 +19,9 @@
     "docs:dev": "vuepress dev documentation",
     "docs:build": "vuepress build documentation"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "nodemonConfig": {
     "ignore": [
       "test/*",

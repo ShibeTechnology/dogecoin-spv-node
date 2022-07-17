@@ -340,7 +340,6 @@ class Wallet extends EventEmitter {
         // like this we keep a 20 not use address set
         await this.generateAddress()
       } catch (err) {
-        console.log(err)
         // FIXME: Find a way to find index of pubkey
         await this.db.putPubkey({ hash: pubkeyHash.toString('hex'), publicKey: scriptElement.publicKey || scriptElement.pubkey, isChangeAddress: 0, index: undefined, used: true })
       }
