@@ -5,7 +5,7 @@ The Dogecoin SPV wallet is a wallet that implements the Simplified Payment Verif
 
 ## Getting started
 
-You can download the latest release on [the github release page](https://github.com/BitcoinAmiens/dogecoin-spv-node/releases/latest).
+You can download the latest release on [the github release page](https://github.com/ShibeTechnology/dogecoin-spv-node/releases/latest).
 
 Extract the folder from the archive and run `./dogecoin-spv start` from your terminal.
 
@@ -60,4 +60,5 @@ Dogecoin SPV wallet is a command line wallet. It means it doesn't have GUI (yet)
 * [Contributing](/contributing)
 * [FAQ](/FAQ)
 * [Development](/development)
+* [Financial Support](/support)
 

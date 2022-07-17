@@ -7,7 +7,8 @@ module.exports = {
         sidebar: [
           '/',
           '/contributing',
-          '/development'
+          '/development',
+          '/support',
         ]
     }
 }
