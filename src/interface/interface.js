@@ -64,6 +64,8 @@ class Interface extends EventEmitter {
   }
 
   _init () {
+    // Clear the whole terminal
+    process.stdout.write('\x1b[2J\x1b[1;1H')
     // Remove cursor
     process.stdout.write(terminalStyle.NO_CURSOR)
     process.stdout.write('\x1b]0;Dogecoin SPV node wallet\x07')
