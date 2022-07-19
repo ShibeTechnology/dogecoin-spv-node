@@ -69,7 +69,6 @@
     "bloom-filter": "^0.2.0",
     "bs58": "^4.0.1",
     "bs58check": "^2.1.1",
-    "clipboardy": "^2.3.0",
     "debug": "^4.1.1",
     "ecdsa": "^0.7.0",
     "exp-net": "0.0.1",

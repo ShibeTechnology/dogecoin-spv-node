@@ -13,16 +13,15 @@ class NewAddressScreen extends Screen {
 
     this.address = args.address
 
-    this.update()
+    this.format()
   }
 
   keyPressed (key) {
     return true
   }
 
-  update () {
-    const layout = `
-================ NEW ADDRESS DOGECOIN ================
+  format () {
+    const layout = `================ NEW ADDRESS DOGECOIN ================
 
   Your address :
   ${this.address}

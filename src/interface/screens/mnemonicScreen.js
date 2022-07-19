@@ -15,7 +15,7 @@ class MnemonicScreen extends Screen {
     this.mnemonic = mnemonic
     this.continue = false
 
-    this.update()
+    this.format()
   }
 
   keyPressed (key) {
@@ -31,10 +31,9 @@ class MnemonicScreen extends Screen {
     }
   }
 
-  update () {
-    // TODO: don't cut word when showing message (making had to read)
-    const layout = `
-================ MNEMONIC ================
+  format () {
+    // TODO: don't cut word when showing message (making hard to read)
+    const layout = `================ MNEMONIC ================
 
   !!! Important !!!
   This will be shown it to you only once. Please save the following 12 words somewhere safe for backup!

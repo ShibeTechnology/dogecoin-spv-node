@@ -84,8 +84,7 @@ class MainScreen extends Screen {
     }
 
     // WARNING!!! NEED TO PAD WITH SPACES
-    const layout = `
-================ SPV node ============================
+    const layout = `================ SPV node ============================
 
     Height headers: ${height}/${bestHeight}
     Hash: ${hash}

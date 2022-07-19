@@ -36,12 +36,10 @@ class CloseChannelScreen extends Screen {
     this.paymentChannelUrl = args.paymentChannelUrl
     this.store = args.store
 
-    this.update()
+    this.format()
 
     this.store.on('rejected', () => {
-      process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-        this.update(this.store.rejectMessage)
-      })
+      this.update(this.store.rejectMessage)
     })
   }
 
@@ -58,15 +56,12 @@ class CloseChannelScreen extends Screen {
   async closePaymentChannel () {
     const ok = await this.closeChannel(this.address, this.paymentChannelUrl)
     if (ok) {
-      process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-        this.update('', 'Closing request for payment channel sent')
-      })
+      this.update('', 'Closing request for payment channel sent')
     }
   }
 
-  update (rejectMessage = '', successMessage = '') {
-    const layout = `
-================ CLOSE PAYMENT CHANNEL ================
+  format (rejectMessage = '', successMessage = '') {
+    const layout = `================ CLOSE PAYMENT CHANNEL ================
   ${rejectMessage || successMessage}
 
   Payment channel address: ${this.address}
@@ -77,6 +72,12 @@ class CloseChannelScreen extends Screen {
     this.numberOfLines = layout.split('\n').length
 
     process.stdout.write(layout)
+  }
+
+  update (rejectMessage = '', successMessage = '') {
+    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
+      this.format('', 'Closing request for payment channel sent')
+    })
   }
 }
 

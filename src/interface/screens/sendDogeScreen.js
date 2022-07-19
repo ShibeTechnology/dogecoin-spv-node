@@ -2,8 +2,7 @@ const Screen = require('./screen')
 const { KOINU, MIN_FEE } = require('../../constants')
 const KEYS = require('../keys')
 const debug = require('debug')('sendDogeScreen')
-const terminalStyle = require('../terminalStyle')
-const clipboardy = require('clipboardy')
+const { AmountField, AddressField } = require('./fields')
 
 const InputFields = {
   None: 0,
@@ -22,11 +21,12 @@ class SendDogeScreen extends Screen {
     this.sendTransaction = args.sendTransaction
     this.store = args.store
 
-    this.address = '__________________'
-    this.amount = '0'
+    // input fields
+    this.toField = new AddressField()
+    this.amountField = new AmountField('0')
     this.selected = InputFields.None
 
-    this.update()
+    this.format()
 
     // TODO: `rejected` event should throw error message instead of retrieving it from store
     this.store.on('rejected', () => {
@@ -55,98 +55,56 @@ class SendDogeScreen extends Screen {
         this.pasteAddress()
         break
       case KEYS.ENTER:
-        if (this.amount === '_') {
-          this.amount = '0'
+        if (this.amountField.value === '_') {
+          this.amountField.value = '0'
         }
-        this._sendDogecoin(BigInt(this.amount) * KOINU, this.address)
+        this._sendDogecoin(BigInt(this.amountField.value) * KOINU, this.toField.value)
         break
       default:
         return this.modifyInputsField(key)
     }
   }
 
-  // TODO: create an abstract input class for this
   modifyInputsField (key) {
     switch (this.selected) {
       case InputFields.AmountField:
-        this._handleChangeAmountField(key)
+        this.amountField.handleChange(key)
+        this.update()
         return false
       case InputFields.AddressField:
+        this.toField.handleChange(key)
+        this.update()
         return false
       default:
         return true
     }
   }
 
-  _handleChangeAmountField (key) {
-    let amount = this.amount
-    if (key === KEYS.RETURN && this.amount.length > 0) {
-      amount = this.amount.slice(0, -1)
-    } else {
-      if (key in ['\u0030', '\u0031', '\u0032', '\u0033', '\u0034', '\u0035', '\u0036', '\u0037', '\u0038', '\u0039']) {
-        // If not a number someone is drunk
-        if (this.amount === '_' || this.amount === '0') {
-          amount = key
-        } else {
-          amount = this.amount + key
-        }
-      }
-    }
-
-    if (amount.length === 0) { amount = '_' }
-
-    debug(amount)
-    this.setAmount(amount)
-  }
-
   async _sendDogecoin (amount, address) {
     try {
       const transactionHash = await this.sendTransaction(amount, address)
-      process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-        this.update('', `Sent ! ${transactionHash.toString('hex')}`)
-      })
+      this.update('', `Sent ! ${transactionHash.toString('hex')}`)
     } catch (err) {
-      process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-        debug(err)
-        this.update(`Fail to send : ${err.message}`, '')
-      })
+      debug(err)
+      this.update(`Fail to send : ${err.message}`, '')
     }
   }
 
   setSelected (newValue) {
     this.selected = newValue
 
-    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-      this.update()
-    })
+    this.update()
   }
 
-  setAddress (newAddress) {
-    this.address = newAddress
-
-    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-      this.update()
-    })
-  }
-
-  setAmount (newAmount) {
-    this.amount = newAmount
-
-    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-      this.update()
-    })
-  }
-
-  update (rejectMessage = '', successMessage = '') {
-    const layout = `
-================ SEND DOGECOINS ================
+  format (rejectMessage = '', successMessage = '') {
+    const layout = `================ SEND DOGECOINS ================
   ${rejectMessage || successMessage}
 
   Current balance: ${this.store.balance / KOINU} Ð                   
   Fee: ${MIN_FEE} Ð
 
-  Amount: ${this.renderAmountField()} Ð                                         
-  To: ${this.renderToField()}
+  Amount: ${this.amountField.renderField(this.selected === InputFields.AmountField)} Ð                                         
+  To: ${this.toField.renderField(this.selected === InputFields.AddressField)}
 
   TIP: Do CTRL+V to copy address in the 'To' field.
 
@@ -158,25 +116,10 @@ class SendDogeScreen extends Screen {
     process.stdout.write(layout)
   }
 
-  renderToField () {
-    if (this.selected === InputFields.AddressField) {
-      return `${terminalStyle.WHITE_BACKGROUND}${terminalStyle.BLACK}${terminalStyle.BOLD}${this.address}${terminalStyle.RESET}`
-    }
-    return this.address
-  }
-
-  renderAmountField () {
-    if (this.selected === InputFields.AmountField) {
-      return `${terminalStyle.WHITE_BACKGROUND}${terminalStyle.BLACK}${terminalStyle.BOLD}${this.amount}${terminalStyle.RESET}`
-    }
-
-    return this.amount
-  }
-
-  pasteAddress () {
-    const address = clipboardy.readSync()
-    // TODO: Verify address is valid
-    this.setAddress(address)
+  update (rejectMessage = '', successMessage = '') {
+    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
+      this.format(rejectMessage, successMessage)
+    })
   }
 }
 

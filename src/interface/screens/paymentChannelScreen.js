@@ -14,7 +14,7 @@ class PaymentChannelScreen extends Screen {
 
     this.initiatePaymentChannel = args.initiatePaymentChannel
     this.paymentChannelUrl = args.paymentChannelUrl
-    this.update()
+    this.format()
   }
 
   keyPressed (key) {
@@ -29,18 +29,15 @@ class PaymentChannelScreen extends Screen {
 
   async startPaymentChannel () {
     this.p2shAddress = await this.initiatePaymentChannel(BigInt(100) * KOINU, this.paymentChannelUrl, 500)
-    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
-      this.update()
-    })
+    this.update()
   }
 
-  update () {
+  format () {
     const p2shline = this.p2shAddress
       ? `P2SH address : ${this.p2shAddress}                                                             `
       : `Press "Enter" to create a payment channel with ${this.paymentChannelUrl}                       `
 
-    const layout = `
-================ PAYMENT CHANNEL ================
+    const layout = `================ PAYMENT CHANNEL ================
 
   ${p2shline}  
 

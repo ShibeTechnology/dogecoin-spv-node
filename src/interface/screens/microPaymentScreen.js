@@ -2,6 +2,12 @@ const Screen = require('./screen')
 const debug = require('debug')('paymentChannelScreen')
 const KEYS = require('../keys')
 const { KOINU } = require('../../constants')
+const { AmountField } = require('./fields')
+
+const InputFields = {
+  None: 0,
+  AmountField: 1
+}
 
 /*
   Micro Payment Screen
@@ -31,15 +37,40 @@ class MicroPaymentScreen extends Screen {
     this.address = args.address
     this.createMicroPayment = args.createMicroPayment
     this.displayMainScreen = args.displayMainScreen
-    this.paymentChannelUrl = args.paymentChannelUrl
+    this.paymentChannelUrltechnology = args.paymentChannelUrl
 
-    this.update()
+    // input fields
+    this.amountField = new AmountField('0')
+    this.selected = InputFields.None
+
+    this.format()
   }
 
   keyPressed (key) {
+    let selected
+
     switch (key) {
+      case KEYS.UP:
+        selected = this.selected - 1 < 0 ? 1 : this.selected - 1
+        this.setSelected(selected)
+        break
+      case KEYS.DOWN:
+        selected = this.selected + 1 > 2 ? 0 : this.selected + 1
+        this.setSelected(selected)
+        break
       case KEYS.ENTER:
         this.sendPaymentChannel()
+        return false
+      default:
+        return this.modifyInputsField(key)
+    }
+  }
+
+  modifyInputsField (key) {
+    switch (this.selected) {
+      case InputFields.AmountField:
+        this.amountField.handleChange(key)
+        this.update()
         return false
       default:
         return true
@@ -48,14 +79,13 @@ class MicroPaymentScreen extends Screen {
 
   async sendPaymentChannel () {
     this.displayMainScreen()
-    await this.createMicroPayment(2n * KOINU, this.address, this.paymentChannelUrl)
+    await this.createMicroPayment(BigInt(this.amountField.value) * KOINU, this.address, this.paymentChannelUrl)
   }
 
-  update () {
-    const layout = `
-================ MICRO PAYMENT ================
+  format () {
+    const layout = `================ MICRO PAYMENT ================
 
-  Amount: 2 Ð
+  Amount: ${this.amountField.renderField(this.selected === InputFields.AmountField)} Ð
   Payment channel address: ${this.address}
 
   Press "Enter" to make payment
@@ -64,6 +94,12 @@ class MicroPaymentScreen extends Screen {
     this.numberOfLines = layout.split('\n').length
 
     process.stdout.write(layout)
+  }
+
+  setSelected (newValue) {
+    this.selected = newValue
+
+    this.update()
   }
 }
 
