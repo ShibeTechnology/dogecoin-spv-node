@@ -1,7 +1,7 @@
 const Screen = require('./screen')
 const KEYS = require('../keys')
 const debug = require('debug')('mainScreen')
-const SATOSHIS = require('../../constants').SATOSHIS
+const KOINU = require('../../constants').KOINU
 
 class MainScreen extends Screen {
   constructor (args) {
@@ -77,7 +77,7 @@ class MainScreen extends Screen {
     if (paymentChannels.length > 0) {
       paymentChannelsSection = ''
       for (const pc of paymentChannels) {
-        paymentChannelsSection += `    ${pc.address} ---> ${pc.closing ? 'CLOSING' : (pc.balance / SATOSHIS + 'Ð')}                   \n`
+        paymentChannelsSection += `    ${pc.address} ---> ${pc.closing ? 'CLOSING' : (pc.balance / KOINU + 'Ð')}                   \n`
       }
       // space padding
       paymentChannelsSection += '                                         '
@@ -95,7 +95,7 @@ class MainScreen extends Screen {
 
 ================ Wallet =============================
 
-    Balance: ${balance / SATOSHIS} Ð                 
+    Balance: ${balance / KOINU} Ð                 
 
 ================ Payment Channels ===================
                                                      

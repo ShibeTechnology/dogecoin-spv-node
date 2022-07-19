@@ -1,7 +1,7 @@
 const Screen = require('./screen')
 const debug = require('debug')('paymentChannelScreen')
 const KEYS = require('../keys')
-const { SATOSHIS } = require('../../constants')
+const { KOINU } = require('../../constants')
 
 /*
   Micro Payment Screen
@@ -48,7 +48,7 @@ class MicroPaymentScreen extends Screen {
 
   async sendPaymentChannel () {
     this.displayMainScreen()
-    await this.createMicroPayment(2n * SATOSHIS, this.address, this.paymentChannelUrl)
+    await this.createMicroPayment(2n * KOINU, this.address, this.paymentChannelUrl)
   }
 
   update () {

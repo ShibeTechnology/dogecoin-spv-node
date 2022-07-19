@@ -68,7 +68,7 @@ const constants = {
 
 module.exports = {
   constants,
-  SATOSHIS: 100000000n,
+  KOINU: 100000000n,
   PROTOCOL_VERSION: 70004,
   MIN_FEE: 1n
 }

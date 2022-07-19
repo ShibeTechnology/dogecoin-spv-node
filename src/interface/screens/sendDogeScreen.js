@@ -1,5 +1,5 @@
 const Screen = require('./screen')
-const { SATOSHIS, MIN_FEE } = require('../../constants')
+const { KOINU, MIN_FEE } = require('../../constants')
 const KEYS = require('../keys')
 const debug = require('debug')('sendDogeScreen')
 const terminalStyle = require('../terminalStyle')
@@ -58,7 +58,7 @@ class SendDogeScreen extends Screen {
         if (this.amount === '_') {
           this.amount = '0'
         }
-        this._sendDogecoin(BigInt(this.amount) * SATOSHIS, this.address)
+        this._sendDogecoin(BigInt(this.amount) * KOINU, this.address)
         break
       default:
         return this.modifyInputsField(key)
@@ -142,7 +142,7 @@ class SendDogeScreen extends Screen {
 ================ SEND DOGECOINS ================
   ${rejectMessage || successMessage}
 
-  Current balance: ${this.store.balance / SATOSHIS} Ð                   
+  Current balance: ${this.store.balance / KOINU} Ð                   
   Fee: ${MIN_FEE} Ð
 
   Amount: ${this.renderAmountField()} Ð                                         
