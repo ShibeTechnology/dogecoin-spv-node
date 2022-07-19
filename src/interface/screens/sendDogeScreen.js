@@ -1,5 +1,5 @@
 const Screen = require('./screen')
-const { SATOSHIS, MIN_FEE } = require('../../constants')
+const { KOINU, MIN_FEE } = require('../../constants')
 const KEYS = require('../keys')
 const debug = require('debug')('sendDogeScreen')
 const terminalStyle = require('../terminalStyle')
@@ -12,7 +12,7 @@ const InputFields = {
 }
 
 class SendDogeScreen extends Screen {
-  constructor (args) {
+  constructor(args) {
     super()
 
     if (typeof args.sendTransaction !== 'function' || typeof args.store !== 'object') {
@@ -39,7 +39,7 @@ class SendDogeScreen extends Screen {
     })
   }
 
-  keyPressed (key) {
+  keyPressed(key) {
     let selected
 
     switch (key) {
@@ -58,7 +58,7 @@ class SendDogeScreen extends Screen {
         if (this.amount === '_') {
           this.amount = '0'
         }
-        this._sendDogecoin(BigInt(this.amount) * SATOSHIS, this.address)
+        this._sendDogecoin(BigInt(this.amount) * KOINU, this.address)
         break
       default:
         return this.modifyInputsField(key)
@@ -66,7 +66,7 @@ class SendDogeScreen extends Screen {
   }
 
   // TODO: create an abstract input class for this
-  modifyInputsField (key) {
+  modifyInputsField(key) {
     switch (this.selected) {
       case InputFields.AmountField:
         this._handleChangeAmountField(key)
@@ -78,7 +78,7 @@ class SendDogeScreen extends Screen {
     }
   }
 
-  _handleChangeAmountField (key) {
+  _handleChangeAmountField(key) {
     let amount = this.amount
     if (key === KEYS.RETURN && this.amount.length > 0) {
       amount = this.amount.slice(0, -1)
@@ -99,7 +99,7 @@ class SendDogeScreen extends Screen {
     this.setAmount(amount)
   }
 
-  async _sendDogecoin (amount, address) {
+  async _sendDogecoin(amount, address) {
     try {
       const transactionHash = await this.sendTransaction(amount, address)
       process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
@@ -113,7 +113,7 @@ class SendDogeScreen extends Screen {
     }
   }
 
-  setSelected (newValue) {
+  setSelected(newValue) {
     this.selected = newValue
 
     process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
@@ -121,7 +121,7 @@ class SendDogeScreen extends Screen {
     })
   }
 
-  setAddress (newAddress) {
+  setAddress(newAddress) {
     this.address = newAddress
 
     process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
@@ -129,7 +129,7 @@ class SendDogeScreen extends Screen {
     })
   }
 
-  setAmount (newAmount) {
+  setAmount(newAmount) {
     this.amount = newAmount
 
     process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
@@ -137,12 +137,12 @@ class SendDogeScreen extends Screen {
     })
   }
 
-  update (rejectMessage = '', successMessage = '') {
+  update(rejectMessage = '', successMessage = '') {
     const layout = `
 ================ SEND DOGECOINS ================
   ${rejectMessage || successMessage}
 
-  Current balance: ${this.store.balance / SATOSHIS} Ð                   
+  Current balance: ${this.store.balance / KOINU} Ð                   
   Fee: ${MIN_FEE} Ð
 
   Amount: ${this.renderAmountField()} Ð                                         
@@ -158,14 +158,14 @@ class SendDogeScreen extends Screen {
     process.stdout.write(layout)
   }
 
-  renderToField () {
+  renderToField() {
     if (this.selected === InputFields.AddressField) {
       return `${terminalStyle.WHITE_BACKGROUND}${terminalStyle.BLACK}${terminalStyle.BOLD}${this.address}${terminalStyle.RESET}`
     }
     return this.address
   }
 
-  renderAmountField () {
+  renderAmountField() {
     if (this.selected === InputFields.AmountField) {
       return `${terminalStyle.WHITE_BACKGROUND}${terminalStyle.BLACK}${terminalStyle.BOLD}${this.amount}${terminalStyle.RESET}`
     }
@@ -173,7 +173,7 @@ class SendDogeScreen extends Screen {
     return this.amount
   }
 
-  pasteAddress () {
+  pasteAddress() {
     const address = clipboardy.readSync()
     // TODO: Verify address is valid
     this.setAddress(address)
