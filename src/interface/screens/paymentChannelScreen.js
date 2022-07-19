@@ -1,7 +1,7 @@
 const Screen = require('./screen')
 const debug = require('debug')('paymentChannelScreen')
 const KEYS = require('../keys')
-const { SATOSHIS } = require('../../constants')
+const { KOINU } = require('../../constants')
 
 /*
   Initiate Payment Channel Screen
@@ -28,7 +28,7 @@ class PaymentChannelScreen extends Screen {
   }
 
   async startPaymentChannel () {
-    this.p2shAddress = await this.initiatePaymentChannel(BigInt(100) * SATOSHIS, this.paymentChannelUrl, 500)
+    this.p2shAddress = await this.initiatePaymentChannel(BigInt(100) * KOINU, this.paymentChannelUrl, 500)
     process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
       this.update()
     })

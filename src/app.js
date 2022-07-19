@@ -14,7 +14,7 @@ const fs = require('fs')
 const path = require('path')
 const process = require('process')
 
-const { SATOSHIS, MIN_FEE } = require('./constants')
+const { KOINU, MIN_FEE } = require('./constants')
 
 // TODO: app args should be the app settings
 async function app (args) {
@@ -41,7 +41,7 @@ async function app (args) {
   // Will be needed in the interface
   const sendTransaction = async (amount, address) => {
     // TODO: calculate fee properly
-    const fee = MIN_FEE * SATOSHIS
+    const fee = MIN_FEE * KOINU
     const rawTransaction = await wallet.send(amount, address, fee)
     spvnode.sendRawTransaction(rawTransaction)
     debug('SENT !')
@@ -56,7 +56,7 @@ async function app (args) {
   // Start payment channel
   const initiatePaymentChannel = async (amount, urlPaymentChannel, blocksLock) => {
     // TODO: calculate fee properly
-    const fee = MIN_FEE * SATOSHIS
+    const fee = MIN_FEE * KOINU
     const toPublicKey = await paymentchannel.getPublicKey(urlPaymentChannel)
 
     const { rawTransaction, rawReturnTransaction, returnTxSignature, address, hashScript, redeemScript } = await wallet.initiatePaymentChannel(amount, toPublicKey, fee, blocksLock)
@@ -82,7 +82,7 @@ async function app (args) {
 
   // Create a micro payment transaction
   const createMicroPayment = async (amount, address, urlPaymentChannel) => {
-    const fee = MIN_FEE * SATOSHIS
+    const fee = MIN_FEE * KOINU
 
     debug('Create micro transaction !')
     const { commitmentTx, signature, redeemScript } = await wallet.createMicroPayment(amount, address, fee)
