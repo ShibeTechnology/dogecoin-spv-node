@@ -1,13 +1,13 @@
 const Screen = require('./screen')
 const debug = require('debug')('paymentChannelScreen')
 const KEYS = require('../keys')
-const { SATOSHIS } = require('../../constants')
+const { KOINU } = require('../../constants')
 
 /*
   Micro Payment Screen
 */
 class MicroPaymentScreen extends Screen {
-  constructor (args) {
+  constructor(args) {
     super()
 
     debug('Making a payment throught a payment channel')
@@ -36,7 +36,7 @@ class MicroPaymentScreen extends Screen {
     this.update()
   }
 
-  keyPressed (key) {
+  keyPressed(key) {
     switch (key) {
       case KEYS.ENTER:
         this.sendPaymentChannel()
@@ -46,12 +46,12 @@ class MicroPaymentScreen extends Screen {
     }
   }
 
-  async sendPaymentChannel () {
+  async sendPaymentChannel() {
     this.displayMainScreen()
-    await this.createMicroPayment(2n * SATOSHIS, this.address, this.paymentChannelUrl)
+    await this.createMicroPayment(2n * KOINU, this.address, this.paymentChannelUrl)
   }
 
-  update () {
+  update() {
     const layout = `
 ================ MICRO PAYMENT ================
 

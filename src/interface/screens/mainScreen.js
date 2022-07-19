@@ -1,10 +1,10 @@
 const Screen = require('./screen')
 const KEYS = require('../keys')
 const debug = require('debug')('mainScreen')
-const SATOSHIS = require('../../constants').SATOSHIS
+const KOINU = require('../../constants').KOINU
 
 class MainScreen extends Screen {
-  constructor (args) {
+  constructor(args) {
     super()
 
     debug('Initiating main screen')
@@ -33,16 +33,16 @@ class MainScreen extends Screen {
     this.store.on('changed', this._handleChangedEvent)
   }
 
-  _handleChangedEvent () {
+  _handleChangedEvent() {
     this.update()
   }
 
-  _unlock () {
+  _unlock() {
     this.lock = false
     this.emit('unlock')
   }
 
-  keyPressed (key) {
+  keyPressed(key) {
     switch (key) {
       case KEYS.NUM_KEY_0:
         this.stop()
@@ -70,14 +70,14 @@ class MainScreen extends Screen {
     }
   }
 
-  format (height = 0, bestHeight = 0, hash = null, numberOfPeers = 0, tips = new Map(), merkleHeight = 0, balance = 0n, paymentChannels = []) {
+  format(height = 0, bestHeight = 0, hash = null, numberOfPeers = 0, tips = new Map(), merkleHeight = 0, balance = 0n, paymentChannels = []) {
     // TODO: seperate in sublayout
 
     let paymentChannelsSection = '    NONE               '
     if (paymentChannels.length > 0) {
       paymentChannelsSection = ''
       for (const pc of paymentChannels) {
-        paymentChannelsSection += `    ${pc.address} ---> ${pc.closing ? 'CLOSING' : (pc.balance / SATOSHIS + 'Ð')}                   \n`
+        paymentChannelsSection += `    ${pc.address} ---> ${pc.closing ? 'CLOSING' : (pc.balance / KOINU + 'Ð')}                   \n`
       }
       // space padding
       paymentChannelsSection += '                                         '
@@ -95,7 +95,7 @@ class MainScreen extends Screen {
 
 ================ Wallet =============================
 
-    Balance: ${balance / SATOSHIS} Ð                 
+    Balance: ${balance / KOINU} Ð                 
 
 ================ Payment Channels ===================
                                                      
@@ -118,7 +118,7 @@ ${paymentChannelsSection}
   }
 
   // Update interface
-  update () {
+  update() {
     if (this.lock) { return }
 
     this.lock = true
