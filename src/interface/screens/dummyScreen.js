@@ -8,7 +8,7 @@ class DummyScreen extends Screen {
     return true
   }
 
-  update () {
+  format () {
 
   }
 }

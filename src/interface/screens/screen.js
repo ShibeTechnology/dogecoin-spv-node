@@ -16,8 +16,14 @@ class Screen extends EventEmitter {
     throw new TypeError('`keyPressed` function has to be defined.')
   }
 
+  format () {
+    throw new TypeError('`format` function has to be defined.')
+  }
+
   update () {
-    throw new TypeError('`update` function has to be defined.')
+    process.stdout.moveCursor(this.cursorPosition, -(this.numberOfLines - 1), () => {
+      this.format()
+    })
   }
 }
 

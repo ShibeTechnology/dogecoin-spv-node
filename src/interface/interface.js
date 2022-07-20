@@ -95,7 +95,7 @@ class Interface extends EventEmitter {
 
   _quit () {
     process.stdout.moveCursor(this.screen.cursorPosition, -(this.screen.numberOfLines - 1), () => {
-      process.stdout.write(`${terminalStyle.CLEAR}${terminalStyle.SHOW_CURSOR}`)
+      process.stdout.write(`\x1b[2J\x1b[1;1H${terminalStyle.SHOW_CURSOR}`)
       // clean screen then quit
       this.emit('quit')
     })
