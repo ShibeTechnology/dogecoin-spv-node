@@ -38,7 +38,6 @@ class SPVNode extends EventEmitter {
     this.height = 0
     this.bestHeight = 0
     // Caching merkle block height for faster update
-    // FIXME: should be merkle count and not height. We can receive it in an incorrect order...
     this.merkleHeight = 0
     // Count number of merkle block received before getting next round
     this.merkleBlockCount = 0
@@ -489,7 +488,7 @@ class SPVNode extends EventEmitter {
       // This should be done once we have cleared all the merkle blocks
       this._sendGetBlocks([this.merkleBlockNextHash])
 
-      // Update cache only when we verifly all the merkle blocks from the inv call
+      // Update cache only when we verified all the merkle blocks from the inv call
       this.merkleBlockBatchSize = 0
       this.merkleHeight = header.height
       this.merkleHash = header.hash

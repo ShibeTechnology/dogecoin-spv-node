@@ -42,7 +42,7 @@ test.serial('should sync all the transactions', async t => {
     wallet.addTxToWallet(tx)
   })
 
-  spvnode.on('synchronized', function (newData) {
+  spvnode.on('synchronized', async function (newData) {
     t.log('Our node is synchronized')
   })
 
@@ -64,11 +64,10 @@ test.serial('should sync all the transactions', async t => {
   await spvnode.addPeer(settings.NODE_IP, settings.DEFAULT_PORT)
 
   await spvnode.start()
+  t.log('staring  synchroniztaion')
   await spvnode.synchronize()
 
-  await new Promise(resolve => setTimeout(resolve, 1000))
-
-  await spvnode.shutdown()
+  await new Promise(resolve => setTimeout(resolve, 10000))
 
   const balance = await wallet.getBalance()
 
