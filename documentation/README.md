@@ -16,7 +16,11 @@ $ tar -xvf dogecoin-spv-0.4.1-linux-x64.tar.gz
 $ cd dist/linux/
 $ ./dogecoin-spv start
 ```
-
+**Debian**
+```
+$ dpkg -i dogecoin-spv_0.4.1.deb
+$ dogecoin-spv start
+```
 **Windows**
 
 TODO
