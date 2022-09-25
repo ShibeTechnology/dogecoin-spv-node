@@ -51,7 +51,7 @@ async function setup (t) {
   const docker = new Docker()
 
   const container = await docker.createContainer({
-    Image: 'rllola/dogecoind',
+    Image: 'rllola/dogecoind:v1.14.6',
     HostConfig: {
       // NetworkMode: 'host',
       Mounts: [{
