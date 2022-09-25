@@ -51,12 +51,12 @@ async function setup (t) {
   const docker = new Docker()
 
   const container = await docker.createContainer({
-    Image: 'dogecoind',
+    Image: 'rllola/dogecoind',
     HostConfig: {
       // NetworkMode: 'host',
       Mounts: [{
-        Source: `${process.cwd()}/provision/dogecoind/dogecoin.conf`,
-        Target: '/root/.dogecoin/dogecoin.conf',
+        Source: `${process.cwd()}/dogecoin.conf`,
+        Target: '/mnt/dogecoin.conf',
         Type: 'bind'
       }],
       PublishAllPorts: true

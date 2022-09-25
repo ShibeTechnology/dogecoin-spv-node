@@ -12,7 +12,7 @@ jobs:
     - name: Checkout Repo 
       uses: actions/checkout@v2
     - name: Build Dogecoin regtest container
-      run: docker build -t dogecoind provision/dogecoind/
+      run: docker pull rllola/dogecoind:v1.14.6
     - name: Install Node 16
       uses: actions/setup-node@v2
       with:

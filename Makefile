@@ -1,10 +1,8 @@
 VERSION=`node -pe "require('./package.json').version"`
 
-build-regtest:
-	docker build -t dogecoind provision/dogecoind/
-
 regtest:
-	docker run --network=host --mount type=bind,source=${PWD}/provision/dogecoind/dogecoin.conf,target=/root/.dogecoin/dogecoin.conf --name dogecoind_regtest dogecoind
+	docker pull rllola/dogecoind:v1.14.6
+	docker run --network=host --mount type=bind,source=${PWD}/dogecoin.conf,target=/mnt/dogecoin.conf --name dogecoind_regtest rllola/dogecoind
 	
 restart:
 	docker start dogecoind_regtest
