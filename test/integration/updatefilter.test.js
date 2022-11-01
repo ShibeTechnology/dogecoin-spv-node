@@ -23,7 +23,7 @@ test.serial('should generate 20 transactions', async t => {
   const containerName = (await container.inspect()).Name
 
   // Fill our wallet with some doges
-  execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)
 
   // use 20 addresses
   for (let i = 0; i < 20; i++) {
@@ -31,8 +31,8 @@ test.serial('should generate 20 transactions', async t => {
 
     t.log(`Sending to address : ${address}`)
 
-    execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
-    execSync(`docker exec ${containerName} dogecoin-cli generate 50`)
+    execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendtoaddress ${address} 150`)
+    execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 50`)
 
     const pubkeyHash = bs58check.decode(address).slice(1)
     await wallet.markPubkeyAsUsed(pubkeyHash)
@@ -80,15 +80,15 @@ test.serial('should generate 1 more transaction', async t => {
   const containerName = (await container.inspect()).Name
 
   // Fill our wallet with some doges
-  execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)
 
   const address = await wallet.generateAddress()
   newHash = bs58check.decode(address).slice(1).toString('hex')
 
   t.log(`Sending to address : ${address}`)
 
-  const txid = execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
-  execSync(`docker exec ${containerName} dogecoin-cli generate 50`)
+  const txid = execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendtoaddress ${address} 150`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 50`)
   t.log(`Transcation ID: ${txid.toString('utf8')}`)
 
   t.pass()
