@@ -53,7 +53,7 @@
     "ava": "^3.12.1",
     "bitcoinjs-lib": "^5.2.0",
     "caxa": "^1.0.0",
-    "dockerode": "^3.3.0",
+    "dockerode": "^3.3.4",
     "nodemon": "^2.0.12",
     "nyc": "^15.1.0",
     "standard": "^16.0.3",

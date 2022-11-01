@@ -14,7 +14,7 @@ test.serial('generate new pubkey that is not part of the filter (see issue #4)',
   const containerName = (await container.inspect()).Name
 
   // Fill our wallet with some doges
-  execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)
 
   // use 20 addresses
   for (let i = 0; i < 20; i++) {
@@ -22,10 +22,10 @@ test.serial('generate new pubkey that is not part of the filter (see issue #4)',
 
     t.log(`Sending to address : ${address}`)
 
-    const txid = execSync(`docker exec ${containerName} dogecoin-cli sendtoaddress ${address} 150`)
-    execSync(`docker exec ${containerName} dogecoin-cli generate 50`)
+    const txid = execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendtoaddress ${address} 150`)
+    execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 50`)
 
-    let rawtx = execSync(`docker exec ${containerName} dogecoin-cli getrawtransaction ${txid.toString('utf8')}`)
+    let rawtx = execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf getrawtransaction ${txid.toString('utf8')}`)
     rawtx = rawtx.toString('utf8').replace('\n', '')
     const tx = decodeTxMessage(Buffer.from(rawtx, 'hex'))
     await wallet.addTxToWallet(tx)
@@ -41,8 +41,8 @@ test.serial('generate new pubkey that is not part of the filter (see issue #4)',
   t.log('Initiate payment channel')
   const pctx = await wallet.initiatePaymentChannel(100n, bobKey.publicKey.toString('hex'), 1n, 200)
 
-  execSync(`docker exec ${containerName} dogecoin-cli sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
-  execSync(`docker exec ${containerName} dogecoin-cli generate 150`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
+  execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)
 
   await wallet.db.closeAll()
 

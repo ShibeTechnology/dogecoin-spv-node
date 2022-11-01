@@ -9,3 +9,4 @@ coverage
 *.tar.gz
 dist/
 !docs/.vuepress/dist
+test/integration/data*
