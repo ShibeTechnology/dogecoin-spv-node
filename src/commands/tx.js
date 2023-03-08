@@ -18,37 +18,8 @@ function decodeTxMessage (payload) {
 
   tx.txIns = []
   for (let i = 0; i < tx.txInCount; i++) {
-    const txIn = {}
-
-    txIn.previousOutput = {}
-
-    txIn.previousOutput.hash = payload.slice(offset, offset + 32).toString('hex')
-    offset += 32
-
-    txIn.previousOutput.index = payload.slice(offset, offset + 4).toString('hex')
-    offset += 4
-
-    if (txIn.previousOutput.hash === '0000000000000000000000000000000000000000000000000000000000000000') {
-      // Coinbase txIn !!!!!!!!
-      compactSize = CompactSize.fromBuffer(payload, offset)
-      offset += compactSize.offset
-
-      txIn.script = payload.slice(offset, offset + compactSize.size).toString('hex')
-      offset += compactSize.size
-
-      txIn.sequence = payload.readUInt32LE(offset)
-      offset += 4
-    } else {
-      // NOT Coinbase txIn !!!!!!!!
-      compactSize = CompactSize.fromBuffer(payload, offset)
-      offset += compactSize.offset
-
-      txIn.signature = payload.slice(offset, offset + compactSize.size).toString('hex')
-      offset += compactSize.size
-
-      txIn.sequence = payload.readUInt32LE(offset)
-      offset += 4
-    }
+    const { txIn, size } = decodeTxIn(payload.slice(offset))
+    offset += size
 
     tx.txIns.push(txIn)
   }
@@ -59,18 +30,8 @@ function decodeTxMessage (payload) {
 
   tx.txOuts = []
   for (let j = 0; j < tx.txOutCount; j++) {
-    const txOut = {}
-
-    txOut.value = payload.readBigUInt64LE(offset)
-    offset += 8
-
-    compactSize = CompactSize.fromBuffer(payload, offset)
-    offset += compactSize.offset
-
-    txOut.pkScriptSize = compactSize.size
-
-    txOut.pkScript = payload.slice(offset, offset + txOut.pkScriptSize)
-    offset += compactSize.size
+    const { txOut, size } = decodeTxOut(payload.slice(offset))
+    offset += size
 
     tx.txOuts.push(txOut)
   }
@@ -150,4 +111,59 @@ function encodeRawTransaction (transaction) {
   return buffer
 }
 
-module.exports = { decodeTxMessage, encodeRawTransaction }
+function decodeTxIn (payload) {
+  const txIn = {}
+  let offset = 0
+
+  txIn.previousOutput = {}
+
+  txIn.previousOutput.hash = payload.slice(offset, offset + 32).toString('hex')
+  offset += 32
+
+  txIn.previousOutput.index = payload.slice(offset, offset + 4).toString('hex')
+  offset += 4
+
+  if (txIn.previousOutput.hash === '0000000000000000000000000000000000000000000000000000000000000000') {
+    // Coinbase txIn !!!!!!!!
+    const compactSize = CompactSize.fromBuffer(payload, offset)
+    offset += compactSize.offset
+
+    txIn.script = payload.slice(offset, offset + compactSize.size).toString('hex')
+    offset += compactSize.size
+
+    txIn.sequence = payload.readUInt32LE(offset)
+    offset += 4
+  } else {
+    // NOT Coinbase txIn !!!!!!!!
+    const compactSize = CompactSize.fromBuffer(payload, offset)
+    offset += compactSize.offset
+
+    txIn.signature = payload.slice(offset, offset + compactSize.size).toString('hex')
+    offset += compactSize.size
+
+    txIn.sequence = payload.readUInt32LE(offset)
+    offset += 4
+  }
+
+  return { txIn, size: offset }
+}
+
+function decodeTxOut (payload) {
+  const txOut = {}
+  let offset = 0
+
+  txOut.value = payload.readBigUInt64LE(offset)
+  offset += 8
+
+  const compactSize = CompactSize.fromBuffer(payload, offset)
+  offset += compactSize.offset
+
+  txOut.pkScriptSize = compactSize.size
+
+  txOut.pkScript = payload.slice(offset, offset + txOut.pkScriptSize)
+  offset += compactSize.size
+
+  return { txOut, size: offset }
+}
+
+module.exports = { decodeTxMessage, encodeRawTransaction, decodeTxIn, decodeTxOut }
