@@ -47,7 +47,7 @@ function decodeBlockMessage (payload) {
     // loop for txouts
     const txOuts = []
     for (let i = 0; i < countTxOuts.size; i++) {
-      const { txOut, size } = decodeTxIn(payload.slice(offset))
+      const { txOut, size } = decodeTxOut(payload.slice(offset))
       offset += size
 
       txOuts.append(txOut)
@@ -58,7 +58,7 @@ function decodeBlockMessage (payload) {
     auxPoWHeader.coinbase.lockTime = payload.readInt32LE(offset)
     offset += 4
 
-    auxPoWHeader.parentHash = payload.slice(offset,offset + 32)
+    auxPoWHeader.parentHash = payload.slice(offset, offset + 32)
     offset += 32
 
     // COINBASE LINK
