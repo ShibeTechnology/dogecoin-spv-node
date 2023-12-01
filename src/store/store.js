@@ -13,6 +13,7 @@ class Store extends EventEmitter {
     this.merkleHeight = 0
     this.rejectMessage = {}
     this.paymentChannels = []
+    this.transactions = []
   }
 
   getNumPeers () {
