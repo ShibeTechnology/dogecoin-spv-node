@@ -1,5 +1,6 @@
 const CompactSize = require('../utils/compactSize')
 const decodeHeader = require('../utils/decodeHeader')
+const { BLOCK_VERSION_AUXPOW_BIT } = require('./constants')
 
 function decodeHeadersMessage (payload) {
   const headers = {}
@@ -21,8 +22,8 @@ function decodeHeadersMessage (payload) {
     header.transactionCount = payload.readUInt8(offset)
     offset += 1
 
-    // We need to verify this rule I am not sure about that
-    if (header.nonce === 0 && header.version >= 6422786) {
+    // Same method as in block!
+    if ((header.version & BLOCK_VERSION_AUXPOW_BIT) !== 0) {
       // this is happening
       // https://en.bitcoin.it/wiki/Merged_mining_specification
 
@@ -53,6 +54,10 @@ function decodeHeadersMessage (payload) {
         offset += compactSize.offset
 
         txIn.scriptSize = compactSize.size
+
+        if (typeof compactSize.size === 'bigint') {
+          console.log('IT SHOULDNT BE A BIGINT')
+        }
 
         txIn.script = payload.slice(offset, offset + compactSize.size).toString('hex')
         offset += compactSize.size

@@ -1,0 +1,3 @@
+const BLOCK_VERSION_AUXPOW_BIT = 0x100
+
+module.exports = { BLOCK_VERSION_AUXPOW_BIT }
