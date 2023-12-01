@@ -8,7 +8,6 @@
   ],
   "author": "Lola Rigaut-Luczak <me@laflemme.lol>",
   "license": "WTFPL",
-  "main": "./bin/main.js",
   "scripts": {
     "start": "DEBUG=*,-follow-redirects node src/main.js",
     "dev": "DEBUG=*,-nodemon:*,-nodemon nodemon src/main.js",
@@ -27,6 +26,17 @@
       "test/*",
       "docs/*"
     ]
+  },
+  "exports": {
+    ".": "./src/app.js",
+    "./spvnode": "./src/spvnode/index.js",
+    "./wallet": "./src/wallet/index.js",
+    "./settings": "./src/settings.js",
+    "./network": "./src/network.js",
+    "./utils": "./src/utils/index.js",
+    "./constants": "./src/constants.js",
+    "./store": "./src/store/index.js",
+    "./error": "./src/error.js"
   },
   "bin": {
     "dogecoin-spv": "./bin/main.js"
