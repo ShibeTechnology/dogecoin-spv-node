@@ -1,8 +1,7 @@
 const CompactSize = require('../utils/compactSize')
 const decodeHeader = require('../utils/decodeHeader')
 const { decodeTxMessage, decodeTxIn, decodeTxOut } = require('./tx')
-
-const BLOCK_VERSION_AUXPOW_BIT = 0x100
+const { BLOCK_VERSION_AUXPOW_BIT } = require('./constants')
 
 function decodeBlockMessage (payload) {
   const block = {}

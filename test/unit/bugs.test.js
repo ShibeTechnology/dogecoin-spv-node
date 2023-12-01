@@ -1,5 +1,9 @@
 const test = require('ava')
+const fs = require('fs')
+const path = require('path')
+
 const { decodeMerkleblockMessage } = require('../../src/commands/merkleblock')
+const { decodeHeadersMessage } = require('../../src/commands/headers')
 
 /*
     Test file with bug found when running the software
@@ -11,6 +15,16 @@ test('error decoding `merkleblock` payload', t => {
   decodeMerkleblockMessage(Buffer.from(data, 'hex'))
 
   // SOLVED: it was fucking variable name scoping issue (don't be lazy find new name for your variable)
+
+  t.pass()
+})
+
+test('error decoding `header` payload because of F00DB4B3 nonce', t => {
+  const data = fs.readFileSync(path.join('test', 'test_vectors', 'foodbabeheader.raw'))
+
+  decodeHeadersMessage(data)
+
+  // SOLVED: We can detect if a block is AUXPOW usig the versio and bit mask
 
   t.pass()
 })
