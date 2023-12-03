@@ -220,6 +220,10 @@ async function app (args) {
     store.setSPVState(newData)
   })
 
+  spvnode.on('shutdown', function (newData) {
+    store.setSPVState(newData)
+  })
+
   spvnode.on('reject', function (rejectMessage) {
     debug(rejectMessage)
     store.setRejectMessage(rejectMessage)

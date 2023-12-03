@@ -120,6 +120,7 @@ class SPVNode extends EventEmitter {
 
   _getCurrentState () {
     return {
+      state: this.state,
       bestHeight: this.bestHeight,
       height: this.height,
       hash: this.hash,
@@ -268,8 +269,8 @@ class SPVNode extends EventEmitter {
       }
 
       debug('Is Fully Synchronized !!!')
-      this.emit('synchronized', this._getCurrentState())
       this.state = NodeStatus.SYNCHRONIZED
+      this.emit('synchronized', this._getCurrentState())
 
       return
     }
@@ -546,6 +547,7 @@ class SPVNode extends EventEmitter {
 
   async shutdown () {
     this.state = NodeStatus.SHUTDOWN
+    this.emit('shutdown', this._getCurrentState())
 
     // Shutting down so we are saving node state
     await this.db.putMerklesHeight(this.merkleHeight, this.merkleHash)

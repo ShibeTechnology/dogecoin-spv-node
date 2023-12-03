@@ -4,6 +4,7 @@ class Store extends EventEmitter {
   constructor () {
     super()
 
+    this.state = null
     this.balance = BigInt(0)
     this.height = 0
     this.bestHeight = 0
@@ -29,6 +30,7 @@ class Store extends EventEmitter {
   setSPVState (data) {
     if (data === undefined) { throw new Error("Received 'undefined' set of data") }
 
+    this.state = data.state
     this.height = data.height
     this.bestHeight = data.bestHeight
     this.hash = data.hash
