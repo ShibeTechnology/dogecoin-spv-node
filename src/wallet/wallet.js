@@ -85,6 +85,10 @@ class Wallet extends EventEmitter {
     }
   }
 
+  pubkeyToAddress (pubkey) {
+    return pubkeyToAddress(pubkey, this.settings.NETWORK_BYTE)
+  }
+
   static createSeedFile (mnemonic, seedFile) {
     const seed = bip39.mnemonicToSeedSync(mnemonic)
     fs.writeFileSync(seedFile, JSON.stringify({ seed: seed.toString('hex') }), { flag: 'w' })
@@ -97,6 +101,10 @@ class Wallet extends EventEmitter {
       pubkeyHashes.push(pubkey.hash)
     }
     return pubkeyHashes
+  }
+
+  async getAllTransactions () {
+    return await this.db.getAllUnspentTxOutputs()
   }
 
   _readSeedFile () {
@@ -360,7 +368,9 @@ class Wallet extends EventEmitter {
         txid: tx.id,
         vout: tx.txOuts.indexOf(txOut),
         value: txOut.value,
-        type: scriptType
+        type: scriptType,
+        pubkey: scriptElement.publicKey || scriptElement.pubkey,
+        scriptElement: null // TODO: save script hash for P2SH
       }
 
       debug(utxo)
