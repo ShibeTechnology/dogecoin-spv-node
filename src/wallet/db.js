@@ -18,6 +18,19 @@ class WalletDB {
     return new Promise((resolve, reject) => {
       this.unspentOutputs.createReadStream()
         .on('data', (data) => {
+          if (!data.value.txin) unspentTxOutputs.push(data)
+        })
+        .on('error', function (err) { reject(err) })
+        .on('end', function () { resolve(unspentTxOutputs) })
+    })
+  }
+
+  getUnspentTxOutputsList () {
+    const unspentTxOutputs = []
+
+    return new Promise((resolve, reject) => {
+      this.unspentOutputs.createReadStream()
+        .on('data', (data) => {
           unspentTxOutputs.push(data)
         })
         .on('error', function (err) { reject(err) })
@@ -38,9 +51,13 @@ class WalletDB {
     })
   }
 
-  // Delete an unspent output
-  delUnspentOutput (outputID) {
-    return this.unspentOutputs.del(outputID)
+  // doesn't delete but instead associate the txin that spent this output
+  delUnspentOutput (outputID, txin) {
+    return this.unspentOutputs.get(outputID)
+      .then((value) => {
+        value.txin = txin
+        return this.unspentOutputs.put(outputID, value)
+      })
   }
 
   putTx (outputID, tx) {
@@ -48,7 +65,7 @@ class WalletDB {
   }
 
   putUnspentOutput (outputID, utxo) {
-    return this.unspentOutputs.put(outputID, utxo)
+    return this.unspentOutputs.put(outputID, { utxo, txin: null })
   }
 
   getTx (outputID) {
