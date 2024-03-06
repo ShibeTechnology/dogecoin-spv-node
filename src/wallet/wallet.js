@@ -85,6 +85,10 @@ class Wallet extends EventEmitter {
     }
   }
 
+  pubkeyToAddress (pubkey, hash = false) {
+    return pubkeyToAddress(pubkey, this.settings.NETWORK_BYTE, hash)
+  }
+
   static createSeedFile (mnemonic, seedFile) {
     const seed = bip39.mnemonicToSeedSync(mnemonic)
     fs.writeFileSync(seedFile, JSON.stringify({ seed: seed.toString('hex') }), { flag: 'w' })
@@ -97,6 +101,14 @@ class Wallet extends EventEmitter {
       pubkeyHashes.push(pubkey.hash)
     }
     return pubkeyHashes
+  }
+
+  static extractPubkeyHashFromP2PKH (script) {
+    return extractPubkeyHashFromP2PKH(script)
+  }
+
+  async getAllTransactions () {
+    return await this.db.getUnspentTxOutputsList()
   }
 
   _readSeedFile () {
@@ -178,8 +190,8 @@ class Wallet extends EventEmitter {
 
     for (const utxo of unspentTxOutputs) {
       // dont count pending transaction in balance or multisig tx neither
-      if (!this.pendingTxIns.has(utxo.key.slice(0, -8)) && utxo.value.type !== ScriptTypes.PAY_TO_SCRIPT_HASH) {
-        balance += BigInt(utxo.value.value)
+      if (!this.pendingTxIns.has(utxo.key.slice(0, -8)) && utxo.value.utxo.type !== ScriptTypes.PAY_TO_SCRIPT_HASH) {
+        balance += BigInt(utxo.value.utxo.value)
       }
     }
 
@@ -294,12 +306,15 @@ class Wallet extends EventEmitter {
       const utxo = await this.db.getUnspentOutput(previousOutput)
 
       if (utxo) {
-        // remove the transaction from unspent transaction list
-        await this.db.delUnspentOutput(previousOutput)
+        txIn.txid = tx.id
+        // mark the transaction as spent
+        await this.db.delUnspentOutput(previousOutput, txIn)
         // remove from pending tx
         if (this.pendingTxIns.has(txIn.previousOutput.hash)) {
           this.pendingTxIns.delete(txIn.previousOutput.hash)
         }
+
+        await this.db.putTx(tx.id, tx)
 
         this.emit('balance')
       }
@@ -354,13 +369,15 @@ class Wallet extends EventEmitter {
 
       debug(`New tx : ${output}`)
 
-      await this.db.putTx(output, tx)
+      await this.db.putTx(tx.id, tx)
 
       const utxo = {
         txid: tx.id,
         vout: tx.txOuts.indexOf(txOut),
         value: txOut.value,
-        type: scriptType
+        type: scriptType,
+        pubkey: scriptElement.publicKey || scriptElement.pubkey,
+        scriptElement: null // TODO: save script hash for P2SH
       }
 
       debug(utxo)
@@ -451,13 +468,22 @@ class Wallet extends EventEmitter {
             return
           }
 
+          // the utxo has been spent (we keep them for history)
+          if (value.txin) {
+            resolve()
+            return
+          }
+
+          // need this line because now we have utxo and the txin that spent it
+          value = value.utxo
+
           if (value.type === ScriptTypes.PAY_TO_SCRIPT_HASH) {
             // If is is a multisig don't use it
             resolve()
             return
           }
 
-          const data = await this.db.getTx(key)
+          const data = await this.db.getTx(value.txid)
           const txin = {
             previousOutput: { hash: value.txid, index: value.vout },
             // Temporary just so we can sign it (https://bitcoin.stackexchange.com/questions/32628/redeeming-a-raw-transaction-step-by-step-example-required/32695#32695)

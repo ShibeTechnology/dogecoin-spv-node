@@ -21,7 +21,7 @@ function getSettings (network, dev) {
   }
 
   if (dev) {
-    settings.DATA_FOLDER = path.join(__dirname, '..', 'data', settings.DATA_SUBFOLDER)
+    settings.DATA_FOLDER = path.join(process.cwd(), 'data', settings.DATA_SUBFOLDER)
   } else {
     let platformDataFolder = os.homedir()
     switch (process.platform) {

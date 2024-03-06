@@ -9,7 +9,7 @@ restart:
 	docker start dogecoind_regtest
 	
 generate:
-	docker exec dogecoind_regtest dogecoin-cli generate $(count)
+	docker exec dogecoind_regtest dogecoin-cli -conf=/mnt/dogecoin.conf generate $(count)
 	
 clean-regtest:
 	rm -rf data/regtest

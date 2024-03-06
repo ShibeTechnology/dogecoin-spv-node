@@ -52,6 +52,12 @@ class Store extends EventEmitter {
 
     this.emit('changed')
   }
+
+  setTransactions (txs) {
+    this.transactions = txs
+
+    this.emit('changed')
+  }
 }
 
 module.exports = Store
