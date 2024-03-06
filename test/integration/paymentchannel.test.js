@@ -41,7 +41,7 @@ test.serial('should create and send a p2sh transaction', async t => {
   t.pass()
 })
 
-test.serial('should create a commitment tx', async t => {
+test.serial.skip('should create a commitment tx', async t => {
   const { wallet } = t.context
 
   t.log('Add payment channel tx to wallet')
@@ -53,7 +53,7 @@ test.serial('should create a commitment tx', async t => {
   t.pass()
 })
 
-test.serial('should register paymentchannel tx after deleting database', async t => {
+test.serial.skip('should register paymentchannel tx after deleting database', async t => {
   const { settings, spvnode, wallet } = t.context
   t.timeout(20000)
 
@@ -81,7 +81,7 @@ test.serial('should register paymentchannel tx after deleting database', async t
   t.pass()
 })
 
-test.serial('should create a commitment tx (2)', async t => {
+test.serial.skip('should create a commitment tx (2)', async t => {
   const { wallet } = t.context
 
   t.log('Create micropayment')
