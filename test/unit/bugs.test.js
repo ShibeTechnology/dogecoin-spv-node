@@ -27,7 +27,6 @@ test('error decoding `merkleblock` payload (Cannot mix BigInt and other types, u
   t.pass()
 })
 
-
 test('error decoding `header` payload because of F00DB4B3 nonce', t => {
   const data = fs.readFileSync(path.join('test', 'test_vectors', 'foodbabeheader.raw'))
 
