@@ -1,16 +1,18 @@
 const CompactSize = require('../utils/compactSize')
+const decodeHeader = require('../utils/decodeHeader')
+const { BLOCK_VERSION_AUXPOW_BIT } = require('./constants')
 
 function decodeMerkleblockMessage (payload) {
   const merkleblock = {}
   let offset = 0
   let compactSize
 
-  if (payload.slice(1, 4).toString('hex') === '016200') {
-    // Merged mining block header
+  // Normal header
+  merkleblock.blockHeader = decodeHeader(payload.slice(offset, offset + 80))
+  offset += 80
 
-    // Normal header
-    offset += 80
-
+  // Merged mining block header
+  if ((merkleblock.blockHeader.version & BLOCK_VERSION_AUXPOW_BIT) !== 0) {
     // Version parent block
     offset += 4
 
