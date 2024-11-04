@@ -6,7 +6,6 @@ const BloomFilter = require('bloom-filter')
 const EventEmitter = require('events')
 
 const bmp = require('bitcoin-merkle-proof')
-const doubleHash = require('../utils/doubleHash')
 const net = require('net')
 
 // slow nodes
