@@ -57,11 +57,6 @@ function decodeMerkleblockMessage (payload) {
 
     // parentblock header
     offset += 80
-
-    merkleblock.blockHeader = payload.slice(0, offset)
-  } else {
-    merkleblock.blockHeader = payload.slice(offset, offset + 80)
-    offset += 80
   }
 
   merkleblock.transactionCount = payload.readUInt32LE(offset)

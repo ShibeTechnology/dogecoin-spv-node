@@ -449,7 +449,7 @@ class SPVNode extends EventEmitter {
   }
 
   async updateMerkleBlock (merkleblockMessage) {
-    const hash = doubleHash(Buffer.from(merkleblockMessage.blockHeader.slice(0, 80), 'hex'))
+    const hash = merkleblockMessage.blockHeader.hash
 
     const header = await this.db.getHeader(hash.toString('hex'))
     if (header === null) {

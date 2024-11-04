@@ -41,7 +41,7 @@ test.serial('should generate 20 transactions', async t => {
   t.pass()
 })
 
-test.serial('should sync the 20 transcations', async t => {
+test.serial('should sync the 20 transactions', async t => {
   const { settings, spvnode, wallet } = t.context
 
   spvnode.on('tx', function (tx) {
@@ -66,6 +66,7 @@ test.serial('should sync the 20 transcations', async t => {
   await spvnode.start()
   await spvnode.synchronize()
 
+  // TODO: we should wait for synchronization to be completed instead of sleeping an arbitrary amount of time
   await new Promise(resolve => setTimeout(resolve, 1000))
 
   await spvnode.shutdown()
