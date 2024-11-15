@@ -210,17 +210,16 @@ function extractScriptHashFromP2SH (script) {
 }
 
 function getScriptType (script) {
-  const firstByte = script.slice(0, 1).toString('hex')
+  const firstByte = script.at(0)
 
-  switch (firstByte) {
-    case '21':
-      return ScriptTypes.PAY_TO_PUBKEY
-    case '76':
-      return ScriptTypes.PAY_TO_PUBKEY_HASH
-    case 'a9':
-      return ScriptTypes.PAY_TO_SCRIPT_HASH
-    default:
-      return ScriptTypes.UNKNOWN
+  if (firstByte === 0x41 && script.at(66) === 0xac) {
+    return ScriptTypes.PAY_TO_PUBKEY
+  } if (firstByte === 0x76 && script.at(24) === 0xac) {
+    return ScriptTypes.PAY_TO_PUBKEY_HASH
+  } if (firstByte === 0xa9 && script.at(22) === 0x87) {
+    return ScriptTypes.PAY_TO_SCRIPT_HASH
+  } else {
+    return ScriptTypes.UNKNOWN
   }
 }
 
@@ -240,3 +239,5 @@ module.exports = {
   extractPubkeyHashFromP2PKH,
   extractScriptHashFromP2SH
 }
+
+// 41049464205950188c29d377eebca6535e0f3699ce4069ecd77ffebfbd0bcf95e3c134cb7d2742d800a12df41413a09ef87a80516353a2f0a280547bb5512dc03da8ac

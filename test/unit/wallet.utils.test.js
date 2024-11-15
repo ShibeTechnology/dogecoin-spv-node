@@ -4,8 +4,12 @@ const bip65 = require('bip65')
 const {
   pubkeyToAddress,
   createPayToHash,
-  serializePayToMultisigWithTimeLockScript
+  serializePayToMultisigWithTimeLockScript,
+  getScriptType
 } = require('../../src/wallet/utils')
+const {
+  ScriptTypes
+} = require('../../src/wallet/scripts')
 
 const TESTNET_NETWORK_BYTE = '71'
 
@@ -26,7 +30,7 @@ const keyPairA = bitcoinjs.ECPair.fromPrivateKey(Buffer.from('3b187fd3a10960efe5
 const keyPairB = bitcoinjs.ECPair.fromPrivateKey(Buffer.from('5cdc1bf38cd77f6a0f130d50e6e37b1d1e3eb59b78f3fde6c1572f44e7f709ed', 'hex'))
 
 /*
-  pubkeyToAddress.js
+  pubkeyToAddress
 */
 test('successfully convert public key to address', t => {
   const pubkey = Buffer.from('04ffd03de44a6e11b9917f3a29f9443283d9871c9d743ef30d5eddcd37094b64d1b3d8090496b53256786bf5c82932ec23c3b74d9f05a6f95a8b5529352656664b', 'hex')
@@ -70,4 +74,31 @@ test('successfully create pay to hash script', t => {
   const expectedp2shScript = bitcoinjs.script.fromASM('OP_HASH160 ' + p2sh.hash.toString('hex') + ' OP_EQUAL').toString('hex')
 
   t.is(p2shScript, expectedp2shScript)
+})
+
+/*
+  getScriptType
+*/
+test('successfully detect pay to pubkey hash', t => {
+  const p2pkhScript = bitcoinjs.script.fromASM('OP_DUP OP_HASH160 0817fa995b26604c5ed08c160f0bc2141567ce72 OP_EQUALVERIFY OP_CHECKSIG')
+
+  const scriptType = getScriptType(p2pkhScript)
+
+  t.is(scriptType, ScriptTypes.PAY_TO_PUBKEY_HASH)
+})
+
+test('successfully detect pay to pubkey', t => {
+  const p2pkScript = bitcoinjs.script.fromASM('049464205950188c29d377eebca6535e0f3699ce4069ecd77ffebfbd0bcf95e3c134cb7d2742d800a12df41413a09ef87a80516353a2f0a280547bb5512dc03da8 OP_CHECKSIG')
+
+  const scriptType = getScriptType(p2pkScript)
+
+  t.is(scriptType, ScriptTypes.PAY_TO_PUBKEY)
+})
+
+test('successfully detect pay to hash script', t => {
+  const p2shScript = bitcoinjs.script.fromASM('OP_HASH160 0817fa995b26604c5ed08c160f0bc2141567ce72 OP_EQUAL')
+
+  const scriptType = getScriptType(p2shScript)
+
+  t.is(scriptType, ScriptTypes.PAY_TO_SCRIPT_HASH)
 })
