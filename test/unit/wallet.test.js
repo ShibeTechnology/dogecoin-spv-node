@@ -53,7 +53,6 @@ test.serial('should save the tx', async t => {
 
   await wallet.addTxToWallet(tx)
 
-  // return wallet.db.txs.get('da4cfccc4abb6c417b1225e29881ac1f00e08ad1f2f1ed4e0f4c311b56de934500000000')
   return wallet.db.txs.get('da4cfccc4abb6c417b1225e29881ac1f00e08ad1f2f1ed4e0f4c311b56de9345')
     .then(function (value) { t.pass() })
     .catch(function (error) { t.fail(error.message) })

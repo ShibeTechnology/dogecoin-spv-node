@@ -26,8 +26,11 @@ bitcoinjs.networks.dogecoin_testnet = {
   wif: 0xef
 }
 
-const keyPairA = bitcoinjs.ECPair.fromPrivateKey(Buffer.from('3b187fd3a10960efe5753c9851c174c05bcdb30db22fd9deab981fe1f0ec7b00', 'hex'))
-const keyPairB = bitcoinjs.ECPair.fromPrivateKey(Buffer.from('5cdc1bf38cd77f6a0f130d50e6e37b1d1e3eb59b78f3fde6c1572f44e7f709ed', 'hex'))
+// const privatekeyPairA = Buffer.from('3b187fd3a10960efe5753c9851c174c05bcdb30db22fd9deab981fe1f0ec7b00', 'hex')
+// const privatekeyPairB = Buffer.from('5cdc1bf38cd77f6a0f130d50e6e37b1d1e3eb59b78f3fde6c1572f44e7f709ed', 'hex')
+
+const publickeyPairA = Buffer.from('02695c71925215f8a23d9880fc52811c77aac00a259876046c8ad92731d8c2c172', 'hex')
+const publickeyPairB = Buffer.from('033018856019108336a67b29f4cf9612b9b83953a92a5ef8472b6822f78d850477', 'hex')
 
 /*
   pubkeyToAddress
@@ -49,14 +52,14 @@ test('successfully convert public key hash to address', t => {
 test('successfully serialize a pay to multisig with time lock script', t => {
   const blocksLock = 500
 
-  const multisigScript = serializePayToMultisigWithTimeLockScript([keyPairA.publicKey.toString('hex'), keyPairB.publicKey.toString('hex')], blocksLock)
+  const multisigScript = serializePayToMultisigWithTimeLockScript([publickeyPairA.toString('hex'), publickeyPairB.toString('hex')], blocksLock)
 
   const locktime = Buffer.from(bip65.encode({ blocks: blocksLock }).toString(16), 'hex').reverse().toString('hex')
 
   const multisigScriptExecpected = bitcoinjs.script.fromASM('OP_IF ' +
       locktime + '00' + ' OP_CHECKLOCKTIMEVERIFY OP_DROP ' +
-      keyPairA.publicKey.toString('hex') + ' OP_CHECKSIGVERIFY OP_ELSE OP_2 OP_ENDIF ' +
-      keyPairA.publicKey.toString('hex') + ' ' + keyPairB.publicKey.toString('hex') + ' OP_2 OP_CHECKMULTISIG')
+      publickeyPairA.toString('hex') + ' OP_CHECKSIGVERIFY OP_ELSE OP_2 OP_ENDIF ' +
+      publickeyPairA.toString('hex') + ' ' + publickeyPairB.toString('hex') + ' OP_2 OP_CHECKMULTISIG')
 
   t.is(multisigScript.toString('hex'), multisigScriptExecpected.toString('hex'))
 })

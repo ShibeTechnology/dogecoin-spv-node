@@ -3,8 +3,7 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const { decodeTxMessage } = require('../../src/commands/tx')
-const { setup, close, regtest } = require('./util.js')
-const { ECPair } = require('bitcoinjs-lib')
+const { setup, close } = require('./util.js')
 
 test.before(setup)
 test.after.always(close)
@@ -32,14 +31,13 @@ test.serial('generate new pubkey that is not part of the filter (see issue #4)',
   }
 
   // Get bob public key
-  const bobKey = ECPair.fromPrivateKey(Buffer.from('3b187fd3a10960efe5753c9851c174c05bcdb30db22fd9deab981fe1f0ec7b00', 'hex'), {
-    compressed: true,
-    network: regtest
-  })
+  // TODO: generate key at every test
+  // const bobPrivateKey = Buffer.from('3b187fd3a10960efe5753c9851c174c05bcdb30db22fd9deab981fe1f0ec7b00', 'hex')
+  const bobPublicKey = Buffer.from('02695c71925215f8a23d9880fc52811c77aac00a259876046c8ad92731d8c2c172', 'hex')
 
   // create payment channel
   t.log('Initiate payment channel')
-  const pctx = await wallet.initiatePaymentChannel(100n, bobKey.publicKey.toString('hex'), 1n, 200)
+  const pctx = await wallet.initiatePaymentChannel(100n, bobPublicKey.toString('hex'), 1n, 200)
 
   execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
   execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)

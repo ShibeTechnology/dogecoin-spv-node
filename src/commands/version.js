@@ -12,7 +12,7 @@ function getVersion (ip, port) {
     remote: {
       services: 1n,
       host: ip,
-      port: port
+      port
     },
     local: {
       services: 4n,

@@ -60,14 +60,14 @@
     "package-lock.json"
   ],
   "devDependencies": {
-    "ava": "^3.12.1",
-    "bitcoinjs-lib": "^5.2.0",
+    "ava": "6.2.0",
+    "bitcoinjs-lib": "6.1.6",
     "caxa": "^1.0.0",
-    "dockerode": "^3.3.4",
-    "nodemon": "^2.0.12",
-    "nyc": "^15.1.0",
-    "standard": "^16.0.3",
-    "vuepress": "^1.8.2"
+    "dockerode": "4.0.2",
+    "nodemon": "3.1.7",
+    "nyc": "17.1.0",
+    "standard": "17.1.2",
+    "vuepress": "1.9.10"
   },
   "dependencies": {
     "axios": "^0.24.0",

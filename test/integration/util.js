@@ -1,6 +1,8 @@
 const Docker = require('dockerode')
 const path = require('path')
 const fs = require('fs')
+const { execSync } = require('child_process')
+const { scheduler } = require('node:timers/promises')
 
 const SPVNode = require('../../src/spvnode')
 const networks = require('../../src/network')
@@ -78,10 +80,25 @@ async function setup (t) {
   settings.DEFAULT_PORT = (await container.inspect()).NetworkSettings.Ports['18444/tcp'][0].HostPort
 
   t.log('container started')
+  // still need to wait after starting...
+  await scheduler.wait(2000)
 
-  // Wait 5 seconds
-  // Needed otherwise we try to connect when node is not ready
-  await new Promise(resolve => setTimeout(resolve, 5000))
+  const containerName = (await container.inspect()).Name.replace('/', '')
+  await new Promise(function (resolve, reject) {
+    // timeout after 10 seconds
+    setTimeout(reject, 10000)
+
+    // check health on the node every second
+    setInterval(function () {
+      const result = execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf getbalance`)
+      if (!result.toString().includes('error code: -28')) {
+        t.log(`container ${containerName} is up`)
+
+        clearInterval(this)
+        resolve()
+      }
+    }, 1000)
+  })
 
   t.context = { spvnode, settings, container, wallet }
 }
@@ -93,7 +110,11 @@ async function close (t) {
   // Clean after
   fs.rmSync(settings.DATA_FOLDER, { recursive: true })
 
+  const containerName = (await container.inspect()).Name.replace('/', '')
+
+  t.log(`stopping ${containerName}`)
   await container.stop()
+  t.log(`removing ${containerName}`)
   await container.remove()
 }
 
