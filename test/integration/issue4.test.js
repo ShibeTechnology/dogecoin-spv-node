@@ -3,7 +3,7 @@ const { execSync } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const { decodeTxMessage } = require('../../src/commands/tx')
-const { setup, close, regtest } = require('./util.js')
+const { setup, close } = require('./util.js')
 
 test.before(setup)
 test.after.always(close)

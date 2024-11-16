@@ -83,7 +83,7 @@ async function setup (t) {
   // still need to wait after starting...
   await scheduler.wait(2000)
 
-  const containerName = (await container.inspect()).Name.replace('/','')
+  const containerName = (await container.inspect()).Name.replace('/', '')
   await new Promise(function (resolve, reject) {
     // timeout after 10 seconds
     setTimeout(reject, 10000)
@@ -97,7 +97,6 @@ async function setup (t) {
         clearInterval(this)
         resolve()
       }
-
     }, 1000)
   })
 
@@ -111,13 +110,12 @@ async function close (t) {
   // Clean after
   fs.rmSync(settings.DATA_FOLDER, { recursive: true })
 
-  const containerName = (await container.inspect()).Name.replace('/','')
+  const containerName = (await container.inspect()).Name.replace('/', '')
 
   t.log(`stopping ${containerName}`)
   await container.stop()
   t.log(`removing ${containerName}`)
   await container.remove()
-
 }
 
 module.exports = { setup, close, regtest }

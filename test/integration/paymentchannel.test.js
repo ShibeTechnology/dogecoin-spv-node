@@ -1,7 +1,7 @@
 const test = require('ava')
 const fs = require('fs')
 const path = require('path')
-const { setup, close, regtest } = require('./util.js')
+const { setup, close } = require('./util.js')
 const { execSync } = require('child_process')
 const { decodeTxMessage } = require('../../src/commands/tx')
 
