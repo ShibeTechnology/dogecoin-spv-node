@@ -239,5 +239,3 @@ module.exports = {
   extractPubkeyHashFromP2PKH,
   extractScriptHashFromP2SH
 }
-
-// 41049464205950188c29d377eebca6535e0f3699ce4069ecd77ffebfbd0bcf95e3c134cb7d2742d800a12df41413a09ef87a80516353a2f0a280547bb5512dc03da8ac

@@ -1,7 +1,6 @@
 const test = require('ava')
 const fs = require('fs')
 const path = require('path')
-const { ECPair } = require('bitcoinjs-lib')
 const { setup, close, regtest } = require('./util.js')
 const { execSync } = require('child_process')
 const { decodeTxMessage } = require('../../src/commands/tx')
@@ -14,10 +13,7 @@ let pctx
 test.serial('should create and send a p2sh transaction', async t => {
   const { wallet, container } = t.context
   const address = await wallet.getAddress()
-  const bobKey = ECPair.fromPrivateKey(Buffer.from('3b187fd3a10960efe5753c9851c174c05bcdb30db22fd9deab981fe1f0ec7b00', 'hex'), {
-    compressed: true,
-    network: regtest
-  })
+  const bobPublicKey = Buffer.from('02695c71925215f8a23d9880fc52811c77aac00a259876046c8ad92731d8c2c172', 'hex')
 
   const containerName = (await container.inspect()).Name
 
@@ -33,7 +29,7 @@ test.serial('should create and send a p2sh transaction', async t => {
   await wallet.addTxToWallet(tx)
 
   t.log('Initiate payment channel')
-  pctx = await wallet.initiatePaymentChannel(100n, bobKey.publicKey.toString('hex'), 1n, 200)
+  pctx = await wallet.initiatePaymentChannel(100n, bobPublicKey.toString('hex'), 1n, 200)
 
   execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf sendrawtransaction ${pctx.rawTransaction.toString('hex')}`)
   execSync(`docker exec ${containerName} dogecoin-cli -conf=/mnt/dogecoin.conf generate 150`)
